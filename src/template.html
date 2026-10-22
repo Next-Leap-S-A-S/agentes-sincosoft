@@ -1,0 +1,1339 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentes de IA | Operaciones Sincosoft</title>
+<meta name="description" content="Agentes de IA para el equipo de operaciones de Sincosoft. Material de capacitación de Next Leap.">
+<link rel="icon" href="{{LOGO_PNG}}">
+</head>
+<body>
+<style>
+{{FONT_CSS}}
+
+/* Sistema visual de nextleap-site, el mismo de Prompts RCI de Sincosoft.
+   Hero tipografico, sin fotografia. */
+:root{
+  --bg:#ffffff;
+  --bg-1:#fafafa;
+  --surface:rgba(0,0,0,.022);
+  --surface-h:rgba(0,0,0,.045);
+  --surface-2:rgba(0,0,0,.014);
+  --line:rgba(0,0,0,.09);
+  --line-h:rgba(0,0,0,.15);
+  --ink:#111114;
+  --ink75:#43444c;
+  --ink60:#5f6069;
+  --ink55:#6b6c75;
+  --ink45:#85868f;
+  --ink40:#8f9099;
+  --ink20:#c4c5cc;
+  --rol:#2563eb;
+  --ctx:#9333ea;
+  --ins:#db2777;
+  --ok:#16a34a;
+  --warn:#b45309;
+  --grad:linear-gradient(135deg,#2563eb,#9333ea,#db2777);
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:120px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+@media (max-width:640px){.wrap{padding:0 16px}}
+.code{font-family:var(--mono);font-size:10px;color:var(--ink40);letter-spacing:.02em}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.18em;color:var(--ink60);margin:0}
+button{font-family:var(--sans)}
+
+/* Navbar flotante */
+.nav{position:fixed;top:8px;left:0;right:0;z-index:60}
+@media(min-width:640px){.nav{top:12px}}
+.navbar{position:relative;margin:0 auto;width:calc(100% - 1rem);max-width:1200px;border-radius:12px;
+  background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  box-shadow:inset 0 0 0 1px var(--line),0 1px 2px rgba(0,0,0,.04),0 14px 40px rgba(0,0,0,.09);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px}
+@media(min-width:640px){.navbar{padding:11px 20px}}
+.brand{display:flex;align-items:center;gap:9px;flex:none;font-size:13px;font-weight:600;letter-spacing:-.01em}
+.brand .code{color:var(--ink40)}
+.brand .mk{height:22px;width:auto;flex:none;display:block}
+.tabs-wrap{position:relative;min-width:0;flex:0 1 auto;display:flex;align-items:center}
+.navtabs{display:flex;align-items:center;gap:2px;overflow-x:auto;scroll-behavior:smooth;
+  scrollbar-width:thin;scrollbar-color:var(--ink20) transparent;padding-bottom:2px}
+.navtabs::-webkit-scrollbar{height:3px}
+.navtabs::-webkit-scrollbar-thumb{background:var(--ink20);border-radius:3px}
+.navtab{background:none;border:0;cursor:pointer;border-radius:6px;padding:6px 10px;
+  font-size:13px;font-weight:500;color:var(--ink45);white-space:nowrap;display:inline-flex;align-items:center;gap:6px;
+  transition:color .15s,background .15s;flex:none}
+.navtab:hover{color:var(--ink75);background:rgba(0,0,0,.04)}
+.navtab[aria-selected="true"]{color:var(--ink);background:rgba(0,0,0,.06)}
+.navtab .code{font-size:9.5px}
+.tabmore{position:absolute;right:0;top:0;bottom:2px;width:44px;border:0;cursor:pointer;
+  display:none;align-items:center;justify-content:flex-end;padding:0 4px 0 0;
+  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.96) 45%);
+  font-size:20px;line-height:1;color:var(--ink60);font-weight:500}
+.tabs-wrap.has-more .tabmore{display:flex}
+.tabmore.left{left:0;right:auto;justify-content:flex-start;padding:0 0 0 4px;
+  background:linear-gradient(270deg,rgba(255,255,255,0),rgba(255,255,255,.96) 45%)}
+.tabs-wrap.has-less .tabmore.left{display:flex}
+.tabs-wrap:not(.has-less) .tabmore.left{display:none}
+@media (max-width:900px){
+  .navbar{flex-wrap:wrap;gap:8px}
+  .tabs-wrap{flex:1 1 100%;width:100%}
+}
+
+/* Botones */
+.btn{display:inline-flex;align-items:center;gap:7px;cursor:pointer;border-radius:6px;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink60);
+  font-size:12px;font-weight:500;padding:7px 11px;
+  transition:background .15s,color .15s,border-color .15s}
+.btn:hover{background:var(--surface-h);color:var(--ink);border-color:var(--line-h)}
+.btn.solid{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:600}
+.btn.solid:hover{background:#2c2d35;color:#fff}
+.btn.sm{padding:4px 8px;font-size:11px}
+
+/* Hero tipografico */
+.hero{position:relative;padding:120px 0 44px;text-align:center;overflow:hidden;isolation:isolate}
+@media(max-width:900px){.hero{padding-top:150px}}
+.hero-bg{position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(38% 52% at 16% 32%,rgba(37,99,235,.17),transparent 70%),
+    radial-gradient(36% 50% at 84% 24%,rgba(147,51,234,.15),transparent 70%),
+    radial-gradient(44% 58% at 58% 92%,rgba(219,39,119,.13),transparent 72%),
+    var(--bg)}
+.hero-grid{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.7;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:44px 44px;
+  -webkit-mask-image:radial-gradient(70% 62% at 50% 42%,#000 18%,transparent 76%);
+  mask-image:radial-gradient(70% 62% at 50% 42%,#000 18%,transparent 76%)}
+.hero-glyph{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);z-index:0;pointer-events:none;
+  font-family:var(--mono);font-weight:500;font-size:clamp(120px,24vw,320px);line-height:1;letter-spacing:.06em;
+  white-space:nowrap;color:transparent;-webkit-text-stroke:1px rgba(17,17,20,.07)}
+.hero-veil{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 70%,var(--bg) 100%)}
+.hero-in{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:16px;
+  max-width:780px;margin:0 auto;padding:30px 22px 32px;border-radius:18px;
+  background:rgba(255,255,255,.7);
+  -webkit-backdrop-filter:blur(22px) saturate(1.4);backdrop-filter:blur(22px) saturate(1.4);
+  border:1px solid rgba(255,255,255,.8);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 26px 70px -30px rgba(20,10,40,.35)}
+@media(min-width:768px){.hero-in{padding:38px 44px 40px}}
+h1{margin:0;font-size:clamp(1.9rem,5vw,3.2rem);font-weight:400;line-height:1.1;
+  letter-spacing:-.018em;max-width:22ch;text-wrap:balance}
+h1 .a{display:block;font-weight:500;color:var(--ink)}
+h1 .b{display:block;margin-top:11px;color:var(--ink55)}
+.hero p.sub{margin:0;max-width:60ch;color:var(--ink60);font-size:15px;line-height:1.65}
+.rci-strip{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.rci-pill{font-family:var(--mono);font-size:11px;padding:4px 10px;border-radius:999px;
+  border:1px solid var(--line);background:rgba(255,255,255,.8);color:var(--ink60)}
+.rci-pill b{font-weight:500}
+.rci-pill.r b{color:var(--rol)}
+.rci-pill.c b{color:var(--ctx)}
+.rci-pill.i b{color:var(--ins)}
+
+/* Paneles */
+.panel{padding:38px 0 20px}
+.panel[hidden]{display:none}
+.sechead{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;max-width:68ch}
+.sechead h2{margin:0;font-size:26px;font-weight:500;letter-spacing:-.02em;line-height:1.2}
+.sechead p{margin:0;color:var(--ink55);font-size:14.5px;line-height:1.65}
+.subhead{margin-top:40px}
+.subhead h2{font-size:21px}
+
+/* Metodo RCI */
+.method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media (max-width:860px){.method-grid{grid-template-columns:1fr}}
+.mcard{position:relative;border:1px solid var(--line);background:var(--bg);border-radius:8px;
+  padding:18px;display:flex;flex-direction:column;gap:11px;overflow:hidden;min-width:0}
+.mcard::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--mc,var(--ink20))}
+.mcard[data-k="rol"]{--mc:var(--rol)}
+.mcard[data-k="ctx"]{--mc:var(--ctx)}
+.mcard[data-k="ins"]{--mc:var(--ins)}
+.mcard-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.mcard-top .code{color:var(--mc,var(--ink40));font-weight:500}
+.mcard h3{margin:0;font-size:15px;font-weight:600;letter-spacing:-.01em}
+.mcard .q{margin:0;font-size:13.5px;line-height:1.6;color:var(--ink60)}
+.mcard .ex{margin:0;font-family:var(--mono);font-size:11.5px;line-height:1.65;color:var(--ink75);
+  background:var(--surface);border-left:2px solid var(--mc,var(--ink20));padding:9px 11px;border-radius:0 4px 4px 0}
+.mcard .fail{margin:0;font-size:12.5px;line-height:1.5;color:var(--ink45)}
+.mcard .fail b{color:var(--ink60);font-weight:600}
+.mcard ul{margin:0;padding-left:18px;font-size:13px;line-height:1.6;color:var(--ink75)}
+.mcard ul li{margin-bottom:4px}
+
+/* Grillas */
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media (max-width:960px){.grid3{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:700px){.grid2,.grid3{grid-template-columns:1fr}}
+
+/* Prosa */
+.prose{max-width:70ch;display:flex;flex-direction:column;gap:14px}
+.prose p{margin:0;font-size:15px;line-height:1.75;color:var(--ink75)}
+.prose p b{color:var(--ink);font-weight:600}
+.callout{border:1px solid var(--line);border-left:3px solid var(--ink);background:var(--surface-2);
+  border-radius:0 8px 8px 0;padding:14px 16px;font-size:14px;line-height:1.65;color:var(--ink75);max-width:78ch}
+.callout b{color:var(--ink)}
+.callout.warn{border-left-color:var(--warn)}
+
+/* Caja / checklist */
+.box{border:1px solid var(--line);background:var(--bg);border-radius:8px;overflow:hidden;margin-bottom:18px;min-width:0}
+.boxhead{padding:11px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+  border-bottom:1px solid var(--line);background:var(--surface-2)}
+.boxhead h4{margin:0;font-size:13.5px;font-weight:600}
+.klist{list-style:none;margin:0;padding:6px 0}
+.klist li{display:flex;gap:10px;align-items:flex-start;padding:8px 14px;font-size:13.5px;line-height:1.5}
+.klist input{margin:3px 0 0;accent-color:var(--rol);flex:none;width:15px;height:15px;cursor:pointer}
+.klist label{cursor:pointer;color:var(--ink75)}
+.klist input:checked + label{color:var(--ink40);text-decoration:line-through}
+.pvfoot{padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+  border-top:1px solid var(--line);background:var(--surface-2)}
+.verdict{font-size:13px;color:var(--ink60);font-weight:500}
+.meter{height:4px;background:var(--surface-h);border-radius:4px;overflow:hidden;flex:1;min-width:120px;max-width:260px}
+.meter i{display:block;height:100%;width:0;background:var(--grad);transition:width .25s}
+
+/* Ingredientes y recetas */
+.ing .mcard.hl{border-color:var(--line-h);box-shadow:0 12px 30px -18px rgba(0,0,0,.25)}
+.ing .mcard.hl::before{background:var(--grad)}
+.rcidet summary{cursor:pointer;padding:12px 18px;font-size:13px;font-weight:600;color:var(--ink60)}
+.rcidet summary:hover{color:var(--ink)}
+.rcidet[open] summary{border-bottom:1px solid var(--line)}
+
+/* Test interactivo */
+.quiz .boxhead{padding:9px 14px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:7px;padding:2px;background:var(--bg)}
+.segb{border:0;background:none;cursor:pointer;font-size:12px;font-weight:500;color:var(--ink45);padding:5px 10px;border-radius:5px}
+.segb[aria-selected="true"]{background:var(--ink);color:#fff}
+.qzpane{padding:20px 18px 22px}
+.qzpane[hidden],.qzrun[hidden],.qzres[hidden],.qzstart[hidden]{display:none}
+.qzstart{display:flex;flex-direction:column;gap:10px;max-width:560px}
+.qzstart label{font-size:14px;font-weight:600;color:var(--ink75)}
+.qzstart input{font-family:var(--sans);font-size:14px;padding:10px 12px;border:1px solid var(--line);border-radius:6px;color:var(--ink)}
+.qzstart input:focus{outline:2px solid var(--rol);border-color:transparent}
+.qzstart .btn{align-self:flex-start}
+.qzprog{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.qzprog .meter{max-width:none}
+.qzq{margin:0;font-size:20px;line-height:1.4;font-weight:500;letter-spacing:-.01em;max-width:40ch;animation:fade .25s ease-out both}
+.qzhint{margin:8px 0 0;font-size:13.5px;color:var(--ink55);line-height:1.6;max-width:62ch}
+.qzbtns{display:flex;gap:8px;align-items:center;margin-top:18px;flex-wrap:wrap}
+.qzbtns .sp{flex:1}
+.qzyes,.qzno{min-width:92px;justify-content:center;font-size:14px;padding:9px 16px}
+.qzyes:hover{border-color:var(--ok);color:var(--ok)}
+.qzres{display:flex;gap:22px;align-items:flex-start;animation:fade .3s ease-out both}
+@media (max-width:640px){.qzres{flex-direction:column;gap:14px}}
+.qzscore{flex:none;width:96px;height:96px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:conic-gradient(var(--c,var(--ink)) calc(var(--p,0)*1%),var(--surface-h) 0);position:relative}
+.qzscore::before{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--bg)}
+.qzscore span,.qzscore small{position:relative}
+.qzscore span{font-size:28px;font-weight:600;line-height:1}
+.qzscore small{font-size:11px;color:var(--ink45);font-family:var(--mono)}
+.qzresbody{display:flex;flex-direction:column;gap:8px;min-width:0}
+.qzresbody h3{margin:0;font-size:19px;font-weight:600;letter-spacing:-.01em}
+.qzresbody p{margin:0;font-size:14px;color:var(--ink75);line-height:1.65;max-width:62ch}
+.qzacts{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.qzintro{margin:0 0 14px;font-size:14px;color:var(--ink60);display:flex;gap:10px;flex-wrap:wrap;align-items:baseline;justify-content:space-between}
+.cases{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:14px}
+@media (max-width:760px){.cases{grid-template-columns:1fr}}
+.case{border:1px solid var(--line);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:10px;transition:border-color .2s}
+.case.ok{border-color:rgba(22,163,74,.45)}
+.case.bad{border-color:rgba(180,83,9,.45)}
+.case p{margin:0;font-size:13.5px;line-height:1.6;color:var(--ink75)}
+.case .opts{display:flex;gap:6px;flex-wrap:wrap}
+.case .opts .btn[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.case .opts .btn.right{background:rgba(22,163,74,.1);border-color:rgba(22,163,74,.5);color:var(--ok)}
+.case .why{font-size:12.5px;color:var(--ink60);line-height:1.55;animation:fade .25s ease-out both}
+.case .why b{color:var(--ink)}
+.case.ok .why b{color:var(--ok)}
+.case.bad .why b{color:var(--warn)}
+.quiz .pvfoot{margin:0 -18px -22px}
+
+/* Comparacion chat / asistente / agente */
+.cmp .mcard .tag{font-family:var(--mono);font-size:10.5px;color:var(--ink45)}
+.cmp .mcard.hl{border-color:var(--line-h);box-shadow:0 12px 30px -18px rgba(0,0,0,.25)}
+.cmp .mcard.hl::before{background:var(--grad)}
+
+/* Anatomia */
+.anat .mcard{--mc:var(--ink)}
+.anat .mcard .code.big{font-size:12px}
+.rcimini{display:flex;flex-direction:column;gap:6px}
+.rcimini div{font-size:13px;line-height:1.55;color:var(--ink75);padding-left:10px;border-left:2px solid var(--c)}
+.rcimini b{font-weight:600;color:var(--ink)}
+
+/* Plataformas */
+.plat .mcard h3{font-size:16px}
+.plat dl{margin:0;display:grid;grid-template-columns:1fr;gap:8px}
+.plat dt{font-family:var(--mono);font-size:10.5px;color:var(--ink45);letter-spacing:.02em}
+.plat dd{margin:0;font-size:13px;line-height:1.6;color:var(--ink75)}
+.maptable{width:100%;border-collapse:collapse;font-size:13px}
+.maptable th,.maptable td{text-align:left;padding:10px 12px;border-top:1px solid var(--line);vertical-align:top;line-height:1.55}
+.maptable th{font-family:var(--mono);font-size:10.5px;font-weight:500;color:var(--ink45);background:var(--surface-2);border-top:0}
+.maptable td:first-child{font-weight:600;color:var(--ink);width:28%}
+.maptable td{color:var(--ink75)}
+@media (max-width:640px){
+  .maptable thead{display:none}
+  .maptable tr{display:block;border-top:1px solid var(--line);padding:8px 0}
+  .maptable td{display:block;border:0;padding:4px 12px;width:auto}
+  .maptable td:first-child{width:auto}
+}
+
+/* Pasos */
+.steplist{display:flex;flex-direction:column}
+.steprow{display:flex;gap:16px;align-items:flex-start;padding:22px 0;border-top:1px solid var(--line)}
+.steplist .steprow:first-child{border-top:none;padding-top:4px}
+.stepmark{flex:none;width:40px}
+.stepnum{font-family:var(--mono);font-size:19px;font-weight:600;color:var(--ink20);line-height:1}
+.stepbody{flex:1;min-width:0}
+.stepbody h3{margin:0 0 6px;font-size:16px;font-weight:600;letter-spacing:-.01em}
+.stepbody p{margin:0 0 8px;font-size:14px;color:var(--ink75);line-height:1.65}
+.stepbody p:last-child{margin-bottom:0}
+.sublist{margin:6px 0 0;padding-left:18px;font-size:13.5px;color:var(--ink60);line-height:1.65}
+.sublist li{margin-bottom:3px}
+
+/* Asistentes */
+.asel{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.achip{cursor:pointer;border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:6px 10px;
+  font-size:12.5px;font-weight:500;color:var(--ink60);display:inline-flex;gap:7px;align-items:baseline;text-align:left;
+  transition:background .15s,color .15s,border-color .15s;max-width:100%}
+.achip:hover{background:var(--surface-h);border-color:var(--line-h);color:var(--ink)}
+.achip .code{font-size:9.5px}
+.achip[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.achip[aria-pressed="true"] .code{color:rgba(255,255,255,.6)}
+.adetail{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg);animation:fade .25s ease-out both}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.ahead{padding:18px 18px 16px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,var(--surface-2),transparent)}
+.ahead .meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.ahead .area{font-size:11px;text-transform:uppercase;letter-spacing:.1em;font-weight:600;color:var(--ink55)}
+.ahead h3{margin:0;font-size:20px;font-weight:600;letter-spacing:-.015em;line-height:1.3}
+.ahead p{margin:0;font-size:14px;color:var(--ink60);line-height:1.6;max-width:75ch}
+.ahead .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.rciblk{padding:14px 18px 16px;border-bottom:1px solid var(--line)}
+.rciblk .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;display:block;margin-bottom:8px;color:var(--c)}
+.rciblk .txt{margin:0;font-family:var(--mono);font-size:12px;line-height:1.75;white-space:pre-wrap;word-wrap:break-word;
+  overflow-wrap:anywhere;color:var(--ink75);border-left:2px solid var(--c);padding:2px 0 2px 12px}
+.rciblk[data-k="rol"]{--c:var(--rol)}
+.rciblk[data-k="ctx"]{--c:var(--ctx)}
+.rciblk[data-k="ins"]{--c:var(--ins)}
+.aextra{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border-top:1px solid var(--line)}
+@media (max-width:900px){.aextra{grid-template-columns:1fr}}
+.aextra section{padding:14px 18px 18px;border-right:1px solid var(--line);min-width:0}
+.aextra section:last-child{border-right:0}
+@media (max-width:900px){.aextra section{border-right:0;border-bottom:1px solid var(--line)}.aextra section:last-child{border-bottom:0}}
+.aextra h4{margin:0 0 10px;font-size:13px;font-weight:600}
+.aextra ol,.aextra ul{margin:0;padding-left:18px;font-size:13px;line-height:1.6;color:var(--ink75)}
+.aextra li{margin-bottom:7px}
+.ptest{display:flex;flex-direction:column;gap:5px}
+.ptest .btn{align-self:flex-start}
+.anav{display:flex;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap}
+
+.anon{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:700px){.anon{grid-template-columns:1fr}}
+.anon pre{margin:0;font-family:var(--mono);font-size:11.5px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere;
+  padding:12px;border-radius:6px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink75)}
+.anon .code{display:block;margin-bottom:6px}
+
+/* Navegacion entre secciones */
+.pnav{display:flex;justify-content:space-between;gap:10px;margin-top:36px;padding-top:18px;border-top:1px solid var(--line);flex-wrap:wrap}
+.pnav .btn{font-size:12.5px}
+.pnav .sp{flex:1}
+
+footer{margin-top:40px;border-top:1px solid var(--line);padding:26px 0 48px;display:flex;gap:20px;
+  justify-content:space-between;flex-wrap:wrap;align-items:flex-start}
+.footmark{height:30px;width:auto;display:block;opacity:.85;margin-bottom:12px}
+.note{max-width:62ch;font-size:12px;color:var(--ink45);line-height:1.65;margin:0}
+.note strong{color:var(--ink60);font-weight:600}
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,16px);opacity:0;pointer-events:none;
+  background:var(--ink);color:#fff;font-size:12.5px;font-weight:500;padding:9px 16px;border-radius:6px;
+  box-shadow:0 20px 50px rgba(0,0,0,.3);z-index:80;transition:opacity .2s,transform .2s;max-width:calc(100% - 32px)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+:focus-visible{outline:2px solid var(--rol);outline-offset:2px;border-radius:3px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media print{
+  .nav,.pnav,.toast,.btn,.tabmore{display:none!important}
+  .panel[hidden]{display:block!important}
+  .hero{padding-top:20px}
+}
+
+/* Marca del cliente como wordmark tipografico */
+.navright{display:flex;align-items:center;gap:11px;flex:none}
+.vdiv{width:1px;height:20px;background:var(--line);flex:none}
+.client{display:flex;flex-direction:column;align-items:flex-end;line-height:1.1;white-space:nowrap}
+.client-name{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink)}
+.client-sub{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink45)}
+@media(min-width:640px){.client-name{font-size:12px}.client-sub{font-size:9.5px}}
+@media(max-width:480px){.client-sub{display:none}}
+@media (max-width:900px){.navright{order:2;margin-left:auto}.tabs-wrap{order:3}}
+.footbrands{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.footbrands .footmark{margin-bottom:0}
+.hdiv{width:1px;height:34px;background:var(--line);flex:none}
+.footclient .client-name{font-size:13px}
+.footclient .client-sub{font-size:10px}
+
+/* Filtro por area */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.chip{cursor:pointer;border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:4px 11px;
+  font-size:12px;font-weight:500;color:var(--ink55)}
+.chip:hover{color:var(--ink);border-color:var(--line-h)}
+.chip[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.achip[hidden]{display:none}
+
+/* Tipo de agente y flujo */
+.ahead .tipo{font-family:var(--mono);font-size:10.5px;padding:2px 8px;border-radius:999px;
+  border:1px solid rgba(147,51,234,.35);color:var(--ctx);background:rgba(147,51,234,.06)}
+.ahead .tipo.auto{border-color:rgba(22,163,74,.4);color:var(--ok);background:rgba(22,163,74,.06)}
+.aflow{display:grid;grid-template-columns:1fr 1.4fr;border-bottom:1px solid var(--line)}
+@media (max-width:760px){.aflow{grid-template-columns:1fr}}
+.aflow section{padding:14px 18px;border-right:1px solid var(--line);min-width:0}
+.aflow section:last-child{border-right:0}
+@media (max-width:760px){.aflow section{border-right:0;border-bottom:1px solid var(--line)}.aflow section:last-child{border-bottom:0}}
+.aflow .lbl{font-family:var(--mono);font-size:10.5px;color:var(--ink45);display:block;margin-bottom:6px}
+.aflow p{margin:0;font-size:13.5px;line-height:1.6;color:var(--ink75)}
+.aflow ul{margin:0;padding-left:18px;font-size:13px;line-height:1.6;color:var(--ink75)}
+
+/* Mapa de tareas */
+.mapbox .segb[aria-pressed="true"]{background:var(--ink);color:#fff}
+.mapgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px 16px;padding:14px}
+@media (max-width:760px){.mapgrid{grid-template-columns:1fr}}
+.mapf{display:flex;flex-direction:column;gap:5px;min-width:0}
+.mapf.wide{grid-row:span 2}
+.mapf input,.mapf textarea{font-family:var(--sans);font-size:13.5px;line-height:1.5;padding:8px 10px;border:1px solid var(--line);
+  border-radius:6px;color:var(--ink);background:var(--bg);width:100%}
+.mapf textarea{min-height:110px;resize:vertical;flex:1}
+.mapf input::placeholder,.mapf textarea::placeholder{color:var(--ink20)}
+.mapf input:focus,.mapf textarea:focus{outline:2px solid var(--rol);border-color:transparent}
+.mapacts{display:flex;gap:8px;flex-wrap:wrap}
+.btn.armed{border-color:var(--warn);color:var(--warn)}
+@media print{
+  body.printmap .hero,body.printmap footer,body.printmap .panel:not(#p-mapa){display:none!important}
+  body.printmap #p-mapa{display:block!important}
+}
+</style>
+
+<div class="nav">
+  <div class="navbar">
+    <div class="brand"><img class="mk" src="{{LOGO_PNG}}" alt="Next Leap" width="22" height="21"><span class="code">/agentes</span>Next Leap</div>
+    <div class="tabs-wrap" id="tabswrap">
+      <button class="tabmore left" id="tabless" type="button" aria-label="Ver secciones anteriores" tabindex="-1">&lsaquo;</button>
+      <div class="navtabs" role="tablist" id="navtabs" aria-label="Secciones">
+        <button class="navtab" role="tab" data-t="concepto" aria-selected="true"><span class="code">/1</span>Concepto</button>
+        <button class="navtab" role="tab" data-t="ingredientes" aria-selected="false"><span class="code">/2</span>Ingredientes</button>
+        <button class="navtab" role="tab" data-t="receta" aria-selected="false"><span class="code">/3</span>Receta</button>
+        <button class="navtab" role="tab" data-t="plataformas" aria-selected="false"><span class="code">/4</span>Plataformas</button>
+        <button class="navtab" role="tab" data-t="mapa" aria-selected="false"><span class="code">/5</span>Tu mapa</button>
+        <button class="navtab" role="tab" data-t="servir" aria-selected="false"><span class="code">/6</span>Antes de servir</button>
+      </div>
+      <button class="tabmore" id="tabmore" type="button" aria-label="Ver más secciones" tabindex="-1">&rsaquo;</button>
+    </div>
+    <div class="navright">
+      <span class="vdiv"></span>
+      <span class="client" aria-label="Sincosoft, Operaciones"><span class="client-name">Sincosoft</span><span class="client-sub">Operaciones</span></span>
+    </div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="hero-grid" aria-hidden="true"></div>
+  <div class="hero-glyph" aria-hidden="true">R&middot;C&middot;I</div>
+  <div class="hero-veil" aria-hidden="true"></div>
+  <div class="wrap"><div class="hero-in">
+    <p class="eyebrow">/capacitación &middot; Operaciones Sincosoft</p>
+    <h1>
+      <span class="a">Un agente es un prompt con manos.</span>
+      <span class="b">Por eso necesita permisos, límites y alguien que responda.</span>
+    </h1>
+    <p class="sub">Ocho agentes para el trabajo del equipo operativo, dos por frente: proyectos, contable, talento humano y comercial. La receta sigue siendo Rol, Contexto e Instrucción. Se agregan tres ingredientes: cuándo arranca, qué puede tocar y qué espera tu aprobación.</p>
+    <div class="rci-strip" aria-hidden="true">
+      <span class="rci-pill r"><b>R</b> rol</span>
+      <span class="rci-pill c"><b>C</b> contexto</span>
+      <span class="rci-pill i"><b>I</b> instrucción</span>
+      <span class="rci-pill"><b>8</b> agentes de ejemplo</span>
+    </div>
+  </div></div>
+</header>
+
+<main class="wrap">
+
+  <!-- /1 CONCEPTO -->
+  <section class="panel" id="p-concepto" data-title="Concepto">
+    <div class="sechead">
+      <p class="eyebrow">/concepto</p>
+      <h2>¿Qué cambia cuando el prompt se vuelve agente?</h2>
+      <p>Un prompt responde. Un agente además actúa: lee el correo, consulta el CRM, escribe en una hoja, crea una tarea. La pregunta deja de ser qué tan buena es la respuesta. Pasa a ser qué puede hacer sin que nadie lo mire.</p>
+    </div>
+
+    <div class="method-grid cmp">
+      <div class="mcard">
+        <div class="mcard-top"><span class="code">/prompt</span><span class="tag">tú haces todo</span></div>
+        <h3>Prompt en un chat</h3>
+        <p class="q">Tú das el contexto, lees la respuesta y la llevas a donde va. El modelo no toca ningún sistema.</p>
+        <p class="fail"><b>Sirve para:</b> tareas únicas o que cambian cada vez.</p>
+      </div>
+      <div class="mcard hl">
+        <div class="mcard-top"><span class="code">/agente</span><span class="tag">prepara y espera</span></div>
+        <h3>Agente con aprobación</h3>
+        <p class="q">Arranca solo, lee y escribe en otros sistemas, deja todo listo. Lo que sale hacia afuera espera tu sí.</p>
+        <p class="fail"><b>Sirve para:</b> procesos que se repiten y tocan a clientes, proveedores o dinero.</p>
+      </div>
+      <div class="mcard">
+        <div class="mcard-top"><span class="code">/autónomo</span><span class="tag">actúa y reporta</span></div>
+        <h3>Agente autónomo</h3>
+        <p class="q">Hace el proceso completo sin pedir permiso y deja registro de lo que hizo. Alguien revisa después.</p>
+        <p class="fail"><b>Sirve para:</b> tareas internas, reversibles y de bajo riesgo.</p>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:18px">Cada viernes un gerente abre el tablero, cuenta tareas, mira las horas y escribe el informe para el cliente. <b>Un agente puede hacer todo eso a las 2:00 p. m. y dejarlo en borradores.</b> El gerente sigue leyendo y enviando. La diferencia es que empieza por revisar y no por buscar.</div>
+
+    <div class="box quiz" style="margin-top:26px">
+      <div class="boxhead">
+        <h4>Test: ¿prompt, agente o agente autónomo?</h4>
+        <div class="seg" role="tablist" aria-label="Modo del test">
+          <button type="button" class="segb" data-m="tarea" aria-selected="true">Tu tarea</button>
+          <button type="button" class="segb" data-m="casos" aria-selected="false">Casos de práctica</button>
+        </div>
+      </div>
+
+      <div class="qzpane" id="qz-tarea">
+        <div class="qzstart" id="qz-start">
+          <label for="qz-name">Piensa en una tarea de tu equipo y escríbela en una frase.</label>
+          <input type="text" id="qz-name" placeholder="Por ejemplo: preparar el informe semanal del proyecto" autocomplete="off">
+          <button type="button" class="btn solid" id="qz-go">Empezar el test</button>
+        </div>
+        <div class="qzrun" id="qz-run" hidden>
+          <div class="qzprog"><span class="code" id="qz-count">pregunta 1 de 6</span><span class="meter" aria-hidden="true"><i id="qz-bar"></i></span></div>
+          <p class="qzq" id="qz-q"></p>
+          <p class="qzhint" id="qz-hint"></p>
+          <div class="qzbtns">
+            <button type="button" class="btn qzyes" data-v="1">Sí</button>
+            <button type="button" class="btn qzno" data-v="0">No</button>
+            <span class="sp"></span>
+            <button type="button" class="btn sm" id="qz-back">‹ Anterior</button>
+          </div>
+        </div>
+        <div class="qzres" id="qz-res" hidden aria-live="polite">
+          <div class="qzscore"><span id="qz-n">0</span><small>de 6</small></div>
+          <div class="qzresbody">
+            <span class="code" id="qz-task"></span>
+            <h3 id="qz-title"></h3>
+            <p id="qz-text"></p>
+            <div class="qzacts">
+              <button type="button" class="btn solid" id="qz-receta">Ver la receta</button>
+              <button type="button" class="btn" id="qz-mapa">Llevarla a tu mapa</button>
+              <button type="button" class="btn" id="qz-again">Repetir el test</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qzpane" id="qz-casos" hidden>
+        <p class="qzintro">Para cada caso, elige la forma que mejor encaja. <span class="code" id="cs-score">0 de 6 aciertos</span></p>
+        <div class="cases" id="cs-list"></div>
+        <div class="pvfoot"><span class="verdict" id="cs-verdict">Responde los seis casos.</span><button type="button" class="btn sm" id="cs-reset">Reiniciar</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- /2 INGREDIENTES -->
+  <section class="panel" id="p-ingredientes" data-title="Ingredientes" hidden>
+    <div class="sechead">
+      <p class="eyebrow">/ingredientes</p>
+      <h2>Los siete ingredientes de un agente</h2>
+      <p>Los dos primeros ya los conoces de los prompts. Los otros cinco son los que convierten una respuesta en una acción. Si los defines en papel antes de abrir la plataforma, el agente se arma en cualquiera.</p>
+    </div>
+
+    <div class="grid3 ing">
+      <div class="mcard">
+        <div class="mcard-top"><span class="code">/01</span><span class="code">la carta</span></div>
+        <h3>Nombre y misión</h3>
+        <p class="q">Una frase con el resultado que entrega y para quién. Si no cabe en una frase, son dos agentes.</p>
+        <p class="ex">Prepara cada viernes el informe de estado del proyecto y lo deja en borradores para el gerente.</p>
+      </div>
+      <div class="mcard hl">
+        <div class="mcard-top"><span class="code">/02</span><span class="code">la receta escrita</span></div>
+        <h3>Instrucciones con Rol, Contexto e Instrucción</h3>
+        <div class="rcimini">
+          <div style="--c:var(--rol)"><b>Rol.</b> Quién es y qué criterio aplica ante la duda.</div>
+          <div style="--c:var(--ctx)"><b>Contexto.</b> Para qué área trabaja, qué sistemas existen y quién decide.</div>
+          <div style="--c:var(--ins)"><b>Instrucción.</b> Pasos numerados, formato de salida y cuándo detenerse.</div>
+        </div>
+      </div>
+      <div class="mcard">
+        <div class="mcard-top"><span class="code">/03</span><span class="code">el temporizador</span></div>
+        <h3>Disparador</h3>
+        <p class="q">Lo que lo pone a trabajar: una hora fija, un correo que llega, un archivo nuevo, un cambio de estado o una persona que se lo pide.</p>
+        <p class="fail"><b>Regla:</b> si no puedes nombrar el disparador, todavía es un prompt.</p>
+      </div>
+      <div class="mcard">
+        <div class="mcard-top"><span class="code">/04</span><span class="code">la despensa</span></div>
+        <h3>Conocimiento</h3>
+        <p class="q">Los documentos que consulta siempre: plantillas, procedimientos, políticas, tablas vigentes.</p>
+        <p class="fail"><b>Regla:</b> vigentes, con nombre claro y sin datos de clientes ni código fuente.</p>
+      </div>
+      <div class="mcard">
+        <div class="mcard-top"><span class="code">/05</span><span class="code">los utensilios</span></div>
+        <h3>Herramientas y permisos</h3>
+        <p class="q">Cada sistema que toca, con su permiso exacto: leer, crear borradores, escribir o enviar. Empieza siempre por el permiso más bajo que sirva.</p>
+        <p class="ex">CRM: lectura. Correo: crear borradores, sin permiso de envío.</p>
+      </div>
+      <div class="mcard">
+        <div class="mcard-top"><span class="code">/06</span><span class="code">la prueba del chef</span></div>
+        <h3>Puntos de aprobación</h3>
+        <p class="q">Las acciones que esperan un sí humano. Como mínimo, todo lo que sale hacia un cliente, un proveedor o una entidad, y todo lo que mueve dinero.</p>
+        <p class="fail"><b>Regla:</b> el punto de aprobación tiene el nombre de un cargo, no «alguien del equipo».</p>
+      </div>
+      <div class="mcard" style="grid-column:1/-1">
+        <div class="mcard-top"><span class="code">/07</span><span class="code">cuándo apagar el fuego</span></div>
+        <h3>Registro y escalamiento</h3>
+        <p class="q">Qué deja escrito de lo que hizo, cuándo se detiene y a quién avisa. Un agente que falla en silencio es peor que no tener agente.</p>
+        <p class="ex">Si no puedes leer el tablero o el registro de horas, no inventes cifras. Avisa al gerente qué fuente falló y detente.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- /3 RECETA -->
+  <section class="panel" id="p-receta" data-title="Receta" hidden>
+    <div class="sechead">
+      <p class="eyebrow">/receta</p>
+      <h2>Mise en place: todo listo antes de abrir la plataforma</h2>
+      <p>Casi todo el trabajo ocurre antes de entrar a la herramienta. Un agente mal pensado no se arregla con más instrucciones.</p>
+    </div>
+    <div class="box">
+      <div class="boxhead"><h4>Antes de construir</h4></div>
+      <ul class="klist">
+        <li><input type="checkbox" id="m1"><label for="m1">Una tarea con disparador, entradas, salida y un responsable con cargo.</label></li>
+        <li><input type="checkbox" id="m2"><label for="m2">Instrucciones con Rol, Contexto e Instrucción, o uno de los agentes de abajo adaptado.</label></li>
+        <li><input type="checkbox" id="m3"><label for="m3">La lista de sistemas que toca, con el permiso mínimo de cada uno.</label></li>
+        <li><input type="checkbox" id="m4"><label for="m4">Los puntos de aprobación escritos: qué acción, quién aprueba.</label></li>
+        <li><input type="checkbox" id="m5"><label for="m5">Documentos de apoyo vigentes, sin datos de clientes ni credenciales.</label></li>
+        <li><input type="checkbox" id="m6"><label for="m6">Tres pruebas ficticias: un caso normal, uno con información faltante y uno que le pide salirse de sus límites.</label></li>
+      </ul>
+    </div>
+
+    <div class="sechead subhead">
+      <p class="eyebrow">/agentes-de-ejemplo</p>
+      <h2>Ocho agentes listos para copiar y adaptar</h2>
+      <p>Dos por frente. Elige uno, copia las instrucciones y cárgalas en la plataforma con los documentos sugeridos. Configura los permisos tal como aparecen y pruébalo con los tres mensajes. Los textos entre corchetes se reemplazan por tu caso.</p>
+    </div>
+    <div class="chips" id="areachips" role="group" aria-label="Filtrar por área"></div>
+    <div class="asel" id="asel" role="group" aria-label="Agentes de ejemplo"></div>
+    <div id="adetail"></div>
+  </section>
+
+  <!-- /4 PLATAFORMAS -->
+  <section class="panel" id="p-plataformas" data-title="Plataformas" hidden>
+    <div class="sechead">
+      <p class="eyebrow">/plataformas</p>
+      <h2>Dónde se arma el agente</h2>
+      <p>La receta es la misma en todas. Cambian el nombre del campo y lo que cada una deja conectar. La tabla describe la idea general, sin botones ni límites, porque cambian con frecuencia y dependen del plan.</p>
+    </div>
+    <div class="box">
+      <table class="maptable">
+        <thead><tr><th>plataforma</th><th>cómo se llama</th><th>dónde va la receta y qué conecta</th></tr></thead>
+        <tbody>
+          <tr><td>Claude</td><td>Proyectos y conectores</td><td>Rol, Contexto e Instrucción en las instrucciones del proyecto. Los documentos, en el conocimiento. Los conectores dan acceso a correo, calendario y documentos.</td></tr>
+          <tr><td>ChatGPT</td><td>GPT personalizados y modo agente</td><td>La receta en el campo de instrucciones. Los documentos, en conocimiento. Las acciones y conectores amplían lo que puede tocar.</td></tr>
+          <tr><td>Gemini</td><td>Gems</td><td>La receta en las instrucciones del Gem. Se apoya en Gmail, Drive y Calendar cuando la cuenta lo permite.</td></tr>
+          <tr><td>Microsoft 365 Copilot</td><td>Agentes y Copilot Studio</td><td>La receta en las instrucciones del agente. El conocimiento suele ser SharePoint. Las acciones se conectan con flujos de Power Automate.</td></tr>
+          <tr><td>Desarrollo propio</td><td>API de un modelo</td><td>La receta va en el prompt de sistema. Las herramientas son funciones que el equipo de desarrollo escribe y controla, con los permisos exactos que el agente necesita.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sechead subhead">
+      <p class="eyebrow">/pasos</p>
+      <h2>Los mismos seis pasos en cualquiera</h2>
+    </div>
+    <div class="steplist">
+      <div class="steprow"><div class="stepmark"><span class="stepnum">01</span></div><div class="stepbody"><h3>Créalo en la plataforma aprobada</h3><p>Con la cuenta corporativa que Sincosoft haya autorizado. Nunca con una cuenta personal.</p></div></div>
+      <div class="steprow"><div class="stepmark"><span class="stepnum">02</span></div><div class="stepbody"><h3>Pega nombre, misión e instrucciones</h3><p>La receta completa va en el campo de instrucciones.</p></div></div>
+      <div class="steprow"><div class="stepmark"><span class="stepnum">03</span></div><div class="stepbody"><h3>Carga los documentos de apoyo</h3><p>Con nombres claros, porque las instrucciones los citan por su nombre.</p></div></div>
+      <div class="steprow"><div class="stepmark"><span class="stepnum">04</span></div><div class="stepbody"><h3>Conecta solo los sistemas necesarios, con el permiso mínimo</h3><p>Si el agente solo debe dejar borradores, no le des permiso de envío. Cada permiso amplía lo que puede hacer y también lo que puede hacer mal.</p></div></div>
+      <div class="steprow"><div class="stepmark"><span class="stepnum">05</span></div><div class="stepbody"><h3>Configura los puntos de aprobación y el disparador</h3><p>Primero que funcione a pedido. El disparador automático se activa cuando ya pasó las pruebas.</p></div></div>
+      <div class="steprow"><div class="stepmark"><span class="stepnum">06</span></div><div class="stepbody"><h3>Pruébalo con los tres mensajes y corrige</h3><p>Si pregunta lo que debe, respeta el formato y se niega a salirse de sus límites, está listo para un piloto.</p></div></div>
+    </div>
+
+    <div class="sechead subhead">
+      <p class="eyebrow">/lo-nuevo</p>
+      <h2>Dots y Grok Bot: agentes que siguen trabajando</h2>
+      <p>Llegaron en 2026 y no esperan a que alguien escriba. Tienen computador propio en la nube, memoria y tareas programadas, y entran a aplicaciones con las cuentas del usuario. La receta sirve igual. Los permisos pesan más.</p>
+    </div>
+    <div class="grid2 plat">
+      <div class="mcard">
+        <div class="mcard-top"><span class="code">/openai</span><span class="code">ChatGPT</span></div>
+        <h3>Dots</h3>
+        <dl>
+          <dt>dónde va la receta</dt>
+          <dd>Rol, Contexto e Instrucción en el encargo que se le da al dot. Las reglas de cada acción dicen si la hace solo, con aprobación previa, si pregunta antes o si te la deja a ti.</dd>
+          <dt>en operaciones</dt>
+          <dd>Sirve para tareas de lectura y preparación, como revisar cada mañana el buzón de facturación y dejar un resumen. Todo lo que salga hacia afuera queda en «pedir aprobación».</dd>
+        </dl>
+      </div>
+      <div class="mcard">
+        <div class="mcard-top"><span class="code">/xai</span><span class="code">Grok</span></div>
+        <h3>Grok Bot</h3>
+        <dl>
+          <dt>dónde va la receta</dt>
+          <dd>El rol se define al crear cada bot. El contexto y la instrucción van en el encargo. Un procedimiento se le puede enseñar mostrándolo una vez y queda guardado como rutina.</dd>
+          <dt>en operaciones</dt>
+          <dd>Sirve para rutinas internas y repetitivas. No lo conectes al ERP, a bancos ni a buzones de clientes mientras siga en beta y sin una política de la compañía.</dd>
+        </dl>
+      </div>
+    </div>
+    <div class="callout warn" style="margin-top:18px"><b>Un agente que actúa solo actúa en nombre de quien lo configuró.</b> Lo que envíe, pague o comparta compromete a esa persona y a Sincosoft. A octubre de 2026 los dos están en despliegue o en beta, solo para algunos planes.</div>
+  </section>
+
+  <!-- /5 MAPA -->
+  <section class="panel" id="p-mapa" data-title="Tu mapa" hidden>
+    <div class="sechead">
+      <p class="eyebrow">/entregable</p>
+      <h2>Mapea tres tareas de tu equipo para un agente</h2>
+      <p>Es el entregable final del curso. Para cada tarea escribe el flujo completo y decide qué queda por fuera de la automatización. Lo que escribas se guarda en este navegador. Al final copia el mapa o imprímelo.</p>
+    </div>
+    <div id="maplist"></div>
+    <div class="box">
+      <div class="pvfoot" style="border-top:0">
+        <span class="verdict" id="mapverdict">0 de 3 tareas completas.</span>
+        <span class="mapacts">
+          <button class="btn" id="map-reset" type="button">Borrar todo</button>
+          <button class="btn" id="map-print" type="button">Imprimir</button>
+          <button class="btn solid" id="map-copy" type="button">Copiar el mapa</button>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- /6 ANTES DE SERVIR -->
+  <section class="panel" id="p-servir" data-title="Antes de servir" hidden>
+    <div class="sechead">
+      <p class="eyebrow">/antes-de-servir</p>
+      <h2>El agente prepara. La decisión sigue siendo del responsable.</h2>
+      <p>Un agente lee, ordena y deja listo. No conoce la relación con el cliente ni responde por el resultado. <b>Si nadie tiene tiempo de revisar lo que hace, todavía no es momento de encenderlo.</b></p>
+    </div>
+
+    <div class="grid2">
+      <div class="mcard">
+        <div class="mcard-top"><span class="code">/información de la compañía</span></div>
+        <h3>Lo que no entra a ninguna herramienta</h3>
+        <p class="q">Código fuente, credenciales, contraseñas, llaves de API e información confidencial de contratos. Un agente no necesita la contraseña del banco para conciliar. Necesita el extracto.</p>
+      </div>
+      <div class="mcard">
+        <div class="mcard-top"><span class="code">/datos personales</span></div>
+        <h3>Conectar también es tratar datos</h3>
+        <p class="q">Nombres, cédulas, salarios o datos de salud de colaboradores y clientes son datos personales en los términos de la Ley 1581 de 2012. Usa casos anonimizados y solo las herramientas aprobadas por la compañía.</p>
+      </div>
+    </div>
+
+    <div class="box" style="margin-top:18px">
+      <div class="boxhead"><h4>Anonimizar con marcadores</h4></div>
+      <div class="anon" style="padding:14px">
+        <div><span class="code">/antes</span><pre>Laura Gómez, gerente de TI de Constructora Andina S.A.S., NIT 900.123.456-7, pidió agregar un módulo de inventarios al contrato 2026-118. Su celular es 300 555 1234.</pre></div>
+        <div><span class="code">/después</span><pre>[CONTACTO-1], [CARGO-1] de [CLIENTE-1], identificada con [NIT-1], pidió agregar un módulo de inventarios al contrato [CONTRATO-1]. Su celular es [TELÉFONO-1].</pre></div>
+      </div>
+      <div class="pvfoot"><span class="verdict">Los nombres del ejemplo son ficticios.</span></div>
+    </div>
+
+    <div class="box">
+      <div class="boxhead"><h4>Antes de encender el agente</h4><button class="btn sm" id="chk-reset" type="button">Reiniciar</button></div>
+      <ul class="klist" id="chklist">
+        <li><input type="checkbox" id="k1"><label for="k1">Pasó las tres pruebas y respetó el formato en todas.</label></li>
+        <li><input type="checkbox" id="k2"><label for="k2">Cuando falta información, pregunta o se detiene antes de suponer.</label></li>
+        <li><input type="checkbox" id="k3"><label for="k3">Se le pidió salirse de sus límites y se negó.</label></li>
+        <li><input type="checkbox" id="k4"><label for="k4">Cada sistema conectado tiene el permiso mínimo. Si solo deja borradores, no puede enviar.</label></li>
+        <li><input type="checkbox" id="k5"><label for="k5">Todo lo que sale hacia un cliente, un proveedor o una entidad, o mueve dinero, espera aprobación de un cargo con nombre.</label></li>
+        <li><input type="checkbox" id="k6"><label for="k6">Deja registro de lo que hizo y avisa cuando falla.</label></li>
+        <li><input type="checkbox" id="k7"><label for="k7">Hay un responsable que lo puede apagar, y sabe cómo hacerlo.</label></li>
+        <li><input type="checkbox" id="k8"><label for="k8">La plataforma y la cuenta son las aprobadas, y las instrucciones están guardadas afuera con fecha y versión.</label></li>
+      </ul>
+      <div class="pvfoot"><span class="meter" aria-hidden="true"><i id="chkbar"></i></span><span class="verdict" id="chkverdict">0 de 8 puntos verificados.</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p class="note"><strong>Manejo de información.</strong> Estos agentes trabajan con información anonimizada y con el permiso mínimo en cada sistema. No conectes cuentas personales, no entregues credenciales en las instrucciones y usa únicamente las herramientas aprobadas por la compañía. Lo que el agente prepara es un borrador. El criterio y la decisión siguen siendo del responsable del área. Los productos mencionados pertenecen a sus titulares y sus funciones cambian con el tiempo.</p>
+  <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end">
+    <div class="footbrands">
+      <img class="footmark" src="{{LOGO_PNG}}" alt="Next Leap" width="31" height="30">
+      <span class="hdiv"></span>
+      <span class="client footclient"><span class="client-name">Sincosoft</span><span class="client-sub">Operaciones</span></span>
+    </div>
+    <p class="note"><strong>Next Leap</strong> &middot; <strong>Sincosoft</strong><br>Agentes con Rol &middot; Contexto &middot; Instrucción<br><span class="code">8 agentes / 4 áreas</span></p>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+{{AGENTES}}
+
+(function(){
+  "use strict";
+
+  /* ---------- utilidades ---------- */
+  var toastEl = document.getElementById("toast");
+  var toastTimer = null;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove("show"); }, 1900);
+  }
+  function copyText(text, okMsg){
+    function fallback(){
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.top = "-1000px";
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      toast(ok ? okMsg : "Seleccione y copie el texto manualmente");
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function(){ toast(okMsg); }, fallback);
+    } else {
+      fallback();
+    }
+  }
+  function el(tag, cls, text){
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function words(s){
+    var m = String(s).trim().match(/\S+/g);
+    return m ? m.length : 0;
+  }
+  var store = {
+    get: function(k){ try { return window.localStorage.getItem(k); } catch (e) { return null; } },
+    set: function(k, v){ try { window.localStorage.setItem(k, v); } catch (e) {} }
+  };
+
+  /* ---------- pestanas ---------- */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll(".navtab"));
+  var order = tabs.map(function(t){ return t.getAttribute("data-t"); });
+  var panels = {};
+  order.forEach(function(k){ panels[k] = document.getElementById("p-" + k); });
+  var navtabs = document.getElementById("navtabs");
+  var tabswrap = document.getElementById("tabswrap");
+
+  function updateHint(){
+    var max = navtabs.scrollWidth - navtabs.clientWidth;
+    tabswrap.classList.toggle("has-more", max > 4 && navtabs.scrollLeft < max - 4);
+    tabswrap.classList.toggle("has-less", max > 4 && navtabs.scrollLeft > 4);
+  }
+  navtabs.addEventListener("scroll", updateHint, { passive: true });
+  window.addEventListener("resize", updateHint);
+  document.getElementById("tabmore").addEventListener("click", function(){
+    navtabs.scrollLeft += Math.max(120, navtabs.clientWidth * 0.6);
+  });
+  document.getElementById("tabless").addEventListener("click", function(){
+    navtabs.scrollLeft -= Math.max(120, navtabs.clientWidth * 0.6);
+  });
+
+  function show(key, opts){
+    if (!panels[key]) key = "concepto";
+    opts = opts || {};
+    tabs.forEach(function(t){
+      var on = t.getAttribute("data-t") === key;
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      if (on) {
+        var l = t.offsetLeft, r = l + t.offsetWidth;
+        if (l < navtabs.scrollLeft || r > navtabs.scrollLeft + navtabs.clientWidth) {
+          navtabs.scrollLeft = l - 24;
+        }
+      }
+    });
+    order.forEach(function(k){ panels[k].hidden = (k !== key); });
+    if (!opts.keepHash) {
+      try { history.replaceState(null, "", "#" + key); } catch (e) {}
+    }
+    if (!opts.noScroll) {
+      var top = document.querySelector(".hero").offsetHeight - 90;
+      if (window.scrollY > top) window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+    }
+    setTimeout(updateHint, 50);
+  }
+  tabs.forEach(function(tab){
+    tab.addEventListener("click", function(){ show(tab.getAttribute("data-t")); });
+  });
+
+  /* navegacion anterior / siguiente al pie de cada seccion */
+  order.forEach(function(k, i){
+    var nav = el("div", "pnav");
+    if (i > 0) {
+      var prev = el("button", "btn", "‹ " + panels[order[i-1]].getAttribute("data-title"));
+      prev.type = "button";
+      prev.addEventListener("click", function(){ show(order[i-1]); });
+      nav.appendChild(prev);
+    }
+    nav.appendChild(el("span", "sp"));
+    if (i < order.length - 1) {
+      var next = el("button", "btn solid", panels[order[i+1]].getAttribute("data-title") + " ›");
+      next.type = "button";
+      next.addEventListener("click", function(){ show(order[i+1]); });
+      nav.appendChild(next);
+    }
+    panels[k].appendChild(nav);
+  });
+
+  /* ---------- test prompt, agente o autonomo ---------- */
+  var PREGUNTAS = [
+    ["¿La tarea se repite al menos una vez por semana?", "Si se hace una vez al trimestre, un buen prompt guardado es suficiente."],
+    ["¿Arranca con algo que se puede detectar: una hora, un correo, un archivo nuevo, un cambio de estado?", "Ese es el disparador. Sin disparador, alguien tiene que acordarse de pedirla."],
+    ["¿Los pasos son casi siempre los mismos y caben en una página?", "Si cada vez se resuelve distinto, el agente no tiene un método que seguir."],
+    ["¿Necesita leer o escribir en otro sistema, como el correo, el CRM, el ERP o el tablero?", "Ahí está la diferencia entre un prompt y un agente: las manos."],
+    ["¿Revisar el resultado toma mucho menos tiempo que hacerlo?", "Si revisar cuesta lo mismo que hacer, el agente no ahorra nada."],
+    ["¿Un error se puede corregir antes de que llegue a un cliente, a un proveedor o al dinero?", "Esta respuesta decide si el agente puede actuar solo o si siempre espera tu aprobación."]
+  ];
+  var PISTAS = [
+    [/informe|estado|reporte|semanal/i, "informe-semanal"], [/cambio|alcance|petici/i, "control-cambios"],
+    [/concilia|banco|extracto/i, "conciliacion"], [/factura|proveedor|causa/i, "facturas-proveedor"],
+    [/ingreso|inducci|onboard|bienvenida/i, "ingreso-colaboradores"], [/pol[ií]tica|vacacion|permiso|pregunta/i, "consultas-politicas"],
+    [/propuesta|cotizaci|oferta/i, "propuestas"], [/seguimiento|embudo|pipeline|oportunidad|crm/i, "seguimiento-embudo"]
+  ];
+  var qzStart = document.getElementById("qz-start");
+  var qzRun = document.getElementById("qz-run");
+  var qzRes = document.getElementById("qz-res");
+  var qzName = document.getElementById("qz-name");
+  var qzAns = [], qzI = 0, qzReceta = null, qzTipo = "";
+
+  function qzAsk(){
+    document.getElementById("qz-count").textContent = "pregunta " + (qzI + 1) + " de " + PREGUNTAS.length;
+    document.getElementById("qz-bar").style.width = Math.round(100 * qzI / PREGUNTAS.length) + "%";
+    var q = document.getElementById("qz-q");
+    q.textContent = PREGUNTAS[qzI][0];
+    q.style.animation = "none"; void q.offsetWidth; q.style.animation = "";
+    document.getElementById("qz-hint").textContent = PREGUNTAS[qzI][1];
+    document.getElementById("qz-back").disabled = qzI === 0;
+  }
+  function qzFinish(){
+    var n = qzAns.reduce(function(a, b){ return a + b; }, 0);
+    var manos = qzAns[3] === 1, corregible = qzAns[5] === 1;
+    var tarea = qzName.value.trim();
+    qzReceta = null;
+    PISTAS.forEach(function(p){ if (!qzReceta && p[0].test(tarea)) qzReceta = p[1]; });
+    var title, text, color;
+    if (n <= 2 || !manos) {
+      title = "Con un buen prompt basta.";
+      text = manos ? "La tarea no se repite lo bastante o no tiene un método fijo. Escribe el prompt con Rol, Contexto e Instrucción y guárdalo en la biblioteca del equipo."
+                   : "La tarea no toca ningún sistema. Un prompt guardado, o un asistente con instrucciones fijas, resuelve lo mismo sin conectar nada.";
+      color = "var(--ink45)";
+      qzTipo = "Prompt";
+    } else if (n <= 4 || !corregible) {
+      title = "Esta tarea pide un agente con aprobación.";
+      text = corregible ? "Tiene disparador y toca sistemas, pero todavía hay pasos que dependen de criterio. Que el agente prepare todo y que una persona apruebe antes de que salga."
+                        : "Un error llegaría directo a un cliente, a un proveedor o al dinero. El agente puede preparar todo. La acción final siempre espera la aprobación de un responsable.";
+      color = "var(--ctx)";
+      qzTipo = "Con aprobación";
+    } else {
+      title = "Candidata a agente autónomo.";
+      text = "Se repite, tiene disparador y método, y un error se corrige a tiempo. Empieza igual con aprobación durante un mes. Si en ese mes no hubo correcciones, quita la aprobación y deja solo el registro.";
+      color = "var(--ok)";
+      qzTipo = "Autónomo supervisado";
+    }
+    if (qzReceta && qzTipo !== "Prompt") {
+      var a = LISTA.filter(function(x){ return x.id === qzReceta; })[0];
+      text += " Hay un agente de ejemplo parecido: " + a.nombre + ".";
+    }
+    document.getElementById("qz-n").textContent = n;
+    var sc = qzRes.querySelector(".qzscore");
+    sc.style.setProperty("--c", color);
+    sc.style.setProperty("--p", 0);
+    setTimeout(function(){ sc.style.setProperty("--p", Math.round(100 * n / PREGUNTAS.length)); }, 30);
+    document.getElementById("qz-task").textContent = tarea ? "/" + tarea : "/tu tarea";
+    document.getElementById("qz-title").textContent = title;
+    document.getElementById("qz-text").textContent = text;
+    document.getElementById("qz-receta").textContent = qzReceta && qzTipo !== "Prompt" ? "Abrir ese agente" : "Ver los agentes";
+    document.getElementById("qz-mapa").hidden = qzTipo === "Prompt" || !tarea;
+    qzRun.hidden = true;
+    qzRes.hidden = false;
+  }
+  document.getElementById("qz-go").addEventListener("click", function(){
+    qzAns = []; qzI = 0;
+    qzStart.hidden = true; qzRes.hidden = true; qzRun.hidden = false;
+    qzAsk();
+  });
+  qzName.addEventListener("keydown", function(e){ if (e.key === "Enter") document.getElementById("qz-go").click(); });
+  Array.prototype.forEach.call(qzRun.querySelectorAll(".qzyes,.qzno"), function(b){
+    b.addEventListener("click", function(){
+      qzAns[qzI] = Number(b.getAttribute("data-v"));
+      if (qzI < PREGUNTAS.length - 1) { qzI++; qzAsk(); } else { qzFinish(); }
+    });
+  });
+  document.getElementById("qz-back").addEventListener("click", function(){
+    if (qzI > 0) { qzI--; qzAsk(); }
+  });
+  document.getElementById("qz-again").addEventListener("click", function(){
+    qzRes.hidden = true; qzStart.hidden = false; qzName.focus();
+  });
+  document.getElementById("qz-receta").addEventListener("click", function(){
+    show("receta");
+    if (qzReceta && qzTipo !== "Prompt") {
+      var k = LISTA.map(function(x){ return x.id; }).indexOf(qzReceta);
+      if (k > -1) { setArea(""); renderAgente(k); }
+    }
+  });
+  document.getElementById("qz-mapa").addEventListener("click", function(){
+    var slot = mapSlotLibre();
+    mapData[slot].tarea = qzName.value.trim();
+    mapData[slot].tipo = qzTipo;
+    mapSave(); mapBuild();
+    show("mapa");
+    toast("Tarea agregada al mapa como tarea " + (slot + 1));
+  });
+
+  /* casos de practica */
+  var CASOS = [
+    ["Comparar una sola vez dos cotizaciones de proveedores de computadores.", "prompt", "Es una tarea única. No hay disparador ni sistema que tocar."],
+    ["Cada viernes revisar el tablero del proyecto y preparar el informe para el cliente, que el gerente lee antes de enviar.", "aprobacion", "Se repite y toca sistemas, pero sale hacia un cliente. El gerente aprueba el envío."],
+    ["Cada noche mover a una carpeta las facturas que llegaron al buzón y renombrarlas con NIT y fecha.", "autonomo", "Es interno, siempre igual y se corrige fácil si algo queda mal nombrado."],
+    ["Enviar a cada cliente el recordatorio de cartera vencida, sin que nadie lo revise.", "aprobacion", "Parece mecánico, pero sale hacia un cliente y habla de dinero. Un error en el valor o en el destinatario cuesta una relación."],
+    ["Escribir el mensaje de cierre de año para el equipo.", "prompt", "Pasa una vez al año y depende del tono de quien lo firma."],
+    ["Cada lunes avisar en el chat interno qué tareas del tablero llevan más de cinco días bloqueadas.", "autonomo", "Solo lee y avisa dentro del equipo. Si se equivoca, alguien lo nota en el mismo chat."]
+  ];
+  var OPC = [["prompt", "Prompt"], ["aprobacion", "Agente con aprobación"], ["autonomo", "Agente autónomo"]];
+  var csList = document.getElementById("cs-list");
+  var csDone = {};
+  function csScore(){
+    var keys = Object.keys(csDone);
+    var ok = keys.filter(function(k){ return csDone[k]; }).length;
+    document.getElementById("cs-score").textContent = ok + " de " + CASOS.length + " aciertos";
+    var v = document.getElementById("cs-verdict");
+    if (keys.length < CASOS.length) v.textContent = "Faltan " + (CASOS.length - keys.length) + " casos.";
+    else if (ok === CASOS.length) v.textContent = "Seis de seis. Ya distingues cuándo un agente puede actuar solo.";
+    else v.textContent = ok + " de seis. Revisa las explicaciones de los casos marcados en naranja.";
+  }
+  function csBuild(){
+    csList.innerHTML = ""; csDone = {};
+    CASOS.forEach(function(c, i){
+      var card = el("div", "case");
+      card.appendChild(el("span", "code", "/caso " + (i + 1)));
+      card.appendChild(el("p", null, c[0]));
+      var opts = el("div", "opts");
+      OPC.forEach(function(o){
+        var b = el("button", "btn sm", o[1]);
+        b.type = "button";
+        b.setAttribute("aria-pressed", "false");
+        b.addEventListener("click", function(){
+          if (i in csDone) return;
+          var ok = o[0] === c[1];
+          csDone[i] = ok;
+          b.setAttribute("aria-pressed", "true");
+          Array.prototype.forEach.call(opts.children, function(x, k){
+            x.disabled = true;
+            if (OPC[k][0] === c[1]) x.classList.add("right");
+          });
+          card.classList.add(ok ? "ok" : "bad");
+          var why = el("p", "why");
+          why.appendChild(el("b", null, ok ? "Correcto. " : "Mejor: " + OPC.filter(function(x){ return x[0] === c[1]; })[0][1].toLowerCase() + ". "));
+          why.appendChild(document.createTextNode(c[2]));
+          card.appendChild(why);
+          csScore();
+        });
+        opts.appendChild(b);
+      });
+      card.appendChild(opts);
+      csList.appendChild(card);
+    });
+    csScore();
+  }
+  csBuild();
+  document.getElementById("cs-reset").addEventListener("click", csBuild);
+
+  Array.prototype.forEach.call(document.querySelectorAll(".segb"), function(b){
+    b.addEventListener("click", function(){
+      var m = b.getAttribute("data-m");
+      Array.prototype.forEach.call(document.querySelectorAll(".segb"), function(x){
+        x.setAttribute("aria-selected", x === b ? "true" : "false");
+      });
+      document.getElementById("qz-tarea").hidden = m !== "tarea";
+      document.getElementById("qz-casos").hidden = m !== "casos";
+    });
+  });
+
+  /* ---------- agentes de ejemplo ---------- */
+  var LISTA = AGENTES;
+  var AREAS = [];
+  LISTA.forEach(function(a){ if (AREAS.indexOf(a.area) < 0) AREAS.push(a.area); });
+  var asel = document.getElementById("asel");
+  var adetail = document.getElementById("adetail");
+  var areachips = document.getElementById("areachips");
+  var areaSel = "";
+
+  function pad(n){ return (n < 10 ? "0" : "") + n; }
+  function fullText(a){
+    return "Nombre del agente: " + a.nombre + "\nMisión: " + a.resumen +
+      "\nDisparador: " + a.disparador + "\nTipo: " + a.tipo +
+      "\nHerramientas y permisos:\n- " + a.herramientas.join("\n- ") +
+      "\n\nROL\n" + a.rol + "\n\nCONTEXTO\n" + a.contexto + "\n\nINSTRUCCIÓN\n" + a.instruccion;
+  }
+
+  function setArea(area){
+    areaSel = area;
+    Array.prototype.forEach.call(areachips.children, function(c){
+      c.setAttribute("aria-pressed", c.getAttribute("data-a") === area ? "true" : "false");
+    });
+    Array.prototype.forEach.call(asel.children, function(c, j){
+      c.hidden = !!area && LISTA[j].area !== area;
+    });
+  }
+  [["", "Todas"]].concat(AREAS.map(function(x){ return [x, x]; })).forEach(function(p){
+    var b = el("button", "chip", p[1]);
+    b.type = "button";
+    b.setAttribute("data-a", p[0]);
+    b.setAttribute("aria-pressed", p[0] === "" ? "true" : "false");
+    b.addEventListener("click", function(){
+      setArea(p[0]);
+      var first = -1;
+      LISTA.forEach(function(a, j){ if (first < 0 && (!p[0] || a.area === p[0])) first = j; });
+      if (first > -1) renderAgente(first);
+    });
+    areachips.appendChild(b);
+  });
+
+  LISTA.forEach(function(a, i){
+    var b = el("button", "achip");
+    b.type = "button";
+    b.setAttribute("aria-pressed", "false");
+    b.appendChild(el("span", "code", "/" + pad(i + 1)));
+    b.appendChild(document.createTextNode(a.nombre));
+    b.addEventListener("click", function(){ renderAgente(i); });
+    asel.appendChild(b);
+  });
+
+  function renderAgente(i){
+    var a = LISTA[i];
+    Array.prototype.forEach.call(asel.children, function(c, j){
+      c.setAttribute("aria-pressed", j === i ? "true" : "false");
+    });
+    adetail.innerHTML = "";
+    var box = el("article", "adetail");
+
+    var head = el("div", "ahead");
+    var meta = el("div", "meta");
+    meta.appendChild(el("span", "area", a.area));
+    var tp = el("span", "tipo" + (a.tipo === "Autónomo supervisado" ? " auto" : ""), a.tipo);
+    meta.appendChild(tp);
+    var n = words(a.rol) + words(a.contexto) + words(a.instruccion);
+    meta.appendChild(el("span", "code", n + " palabras de instrucciones"));
+    head.appendChild(meta);
+    head.appendChild(el("h3", null, a.nombre));
+    head.appendChild(el("p", null, a.resumen));
+    var acts = el("div", "acts");
+    var cp = el("button", "btn solid", "Copiar instrucciones");
+    cp.type = "button";
+    cp.addEventListener("click", function(){ copyText(fullText(a), "Instrucciones copiadas"); });
+    acts.appendChild(cp);
+    head.appendChild(acts);
+    box.appendChild(head);
+
+    var flow = el("div", "aflow");
+    var f1 = el("section");
+    f1.appendChild(el("span", "lbl", "/disparador"));
+    f1.appendChild(el("p", null, a.disparador));
+    flow.appendChild(f1);
+    var f2 = el("section");
+    f2.appendChild(el("span", "lbl", "/herramientas y permisos"));
+    var hl = el("ul");
+    a.herramientas.forEach(function(t){ hl.appendChild(el("li", null, t)); });
+    f2.appendChild(hl);
+    flow.appendChild(f2);
+    box.appendChild(flow);
+
+    var det = el("details", "rcidet");
+    det.appendChild(el("summary", null, "Ver las instrucciones por Rol, Contexto e Instrucción"));
+    [["rol", "/rol", a.rol], ["ctx", "/contexto", a.contexto], ["ins", "/instrucción", a.instruccion]].forEach(function(p){
+      var s = el("div", "rciblk");
+      s.setAttribute("data-k", p[0]);
+      s.appendChild(el("span", "lbl", p[1]));
+      s.appendChild(el("p", "txt", p[2]));
+      det.appendChild(s);
+    });
+    box.appendChild(det);
+
+    var extra = el("div", "aextra");
+    var s1 = el("section");
+    s1.appendChild(el("h4", null, "Documentos de apoyo sugeridos"));
+    var ul = el("ul");
+    a.archivos.forEach(function(t){ ul.appendChild(el("li", null, t)); });
+    s1.appendChild(ul);
+    extra.appendChild(s1);
+
+    var s2 = el("section");
+    s2.appendChild(el("h4", null, "Tres mensajes de prueba"));
+    var ol = el("ol");
+    a.pruebas.forEach(function(t){
+      var li = el("li");
+      var w = el("div", "ptest");
+      w.appendChild(el("span", null, t));
+      var bb = el("button", "btn sm", "Copiar mensaje");
+      bb.type = "button";
+      bb.addEventListener("click", function(){ copyText(t, "Mensaje copiado"); });
+      w.appendChild(bb);
+      li.appendChild(w);
+      ol.appendChild(li);
+    });
+    s2.appendChild(ol);
+    extra.appendChild(s2);
+    box.appendChild(extra);
+    adetail.appendChild(box);
+  }
+  renderAgente(0);
+
+  /* ---------- mapa de tres tareas ---------- */
+  var MAP_KEY = "agentes-sincosoft:mapa";
+  var CAMPOS = [
+    ["tarea", "Tarea", "input", "Preparar el informe semanal del proyecto para el cliente"],
+    ["disparador", "Disparador", "input", "Todos los viernes a las 2:00 p. m."],
+    ["entradas", "Entradas: qué lee", "input", "Tablero del proyecto, registro de horas, cronograma"],
+    ["pasos", "Flujo: pasos del agente", "area", "1. Lee el tablero de la semana\n2. Calcula avance contra plan\n3. Redacta el informe con la plantilla\n4. Lo deja en borradores"],
+    ["herramientas", "Herramientas y permisos", "area", "Tablero: lectura\nCorreo: crear borradores"],
+    ["aprobacion", "Punto de aprobación: qué acción y qué cargo", "input", "El gerente del proyecto aprueba el envío al cliente"],
+    ["fuera", "Lo que queda fuera de la automatización", "input", "Negociar con el cliente un atraso o un cambio de alcance"]
+  ];
+  var TIPOS = ["Con aprobación", "Autónomo supervisado"];
+  var mapData = [];
+  function mapEmpty(){ var o = { tipo: "Con aprobación" }; CAMPOS.forEach(function(c){ o[c[0]] = ""; }); return o; }
+  (function(){
+    var s = null;
+    try { s = JSON.parse(store.get(MAP_KEY) || "null"); } catch (e) { s = null; }
+    for (var i = 0; i < 3; i++) {
+      var o = mapEmpty();
+      if (s && s[i]) Object.keys(o).forEach(function(k){ if (typeof s[i][k] === "string") o[k] = s[i][k]; });
+      mapData.push(o);
+    }
+  })();
+  function mapSave(){ store.set(MAP_KEY, JSON.stringify(mapData)); mapCount(); }
+  function mapSlotLibre(){
+    for (var i = 0; i < 3; i++) if (!mapData[i].tarea.trim()) return i;
+    return 2;
+  }
+  function mapCompleta(o){ return CAMPOS.every(function(c){ return o[c[0]].trim() !== ""; }); }
+  function mapCount(){
+    var n = mapData.filter(mapCompleta).length;
+    document.getElementById("mapverdict").textContent = n === 3 ? "Las tres tareas están completas. Copia el mapa y entrégalo." : n + " de 3 tareas completas.";
+  }
+  var maplist = document.getElementById("maplist");
+  function mapBuild(){
+    maplist.innerHTML = "";
+    mapData.forEach(function(o, i){
+      var box = el("div", "box mapbox");
+      var head = el("div", "boxhead");
+      head.appendChild(el("h4", null, "Tarea " + (i + 1)));
+      var seg = el("div", "seg");
+      seg.setAttribute("role", "group");
+      seg.setAttribute("aria-label", "Tipo de agente para la tarea " + (i + 1));
+      TIPOS.forEach(function(t){
+        var b = el("button", "segb", t);
+        b.type = "button";
+        b.setAttribute("aria-pressed", o.tipo === t ? "true" : "false");
+        b.addEventListener("click", function(){
+          o.tipo = t; mapSave();
+          Array.prototype.forEach.call(seg.children, function(x){ x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+        });
+        seg.appendChild(b);
+      });
+      head.appendChild(seg);
+      box.appendChild(head);
+      var grid = el("div", "mapgrid");
+      CAMPOS.forEach(function(c){
+        var f = el("label", "mapf" + (c[2] === "area" ? " wide" : ""));
+        f.appendChild(el("span", "code", "/" + c[1].toLowerCase()));
+        var inp = el(c[2] === "area" ? "textarea" : "input");
+        if (c[2] !== "area") inp.type = "text";
+        inp.placeholder = c[3];
+        inp.value = o[c[0]];
+        inp.addEventListener("input", function(){ o[c[0]] = inp.value; mapSave(); });
+        f.appendChild(inp);
+        grid.appendChild(f);
+      });
+      box.appendChild(grid);
+      maplist.appendChild(box);
+    });
+    mapCount();
+  }
+  mapBuild();
+  function mapText(){
+    var out = ["MAPA DE TRES TAREAS PARA UN AGENTE", "Operaciones Sincosoft", ""];
+    mapData.forEach(function(o, i){
+      out.push("TAREA " + (i + 1) + ": " + (o.tarea.trim() || "[sin definir]"));
+      out.push("Tipo: " + o.tipo);
+      CAMPOS.slice(1).forEach(function(c){
+        var v = o[c[0]].trim() || "[pendiente]";
+        out.push(c[1] + ":" + (v.indexOf("\n") > -1 ? "\n" + v : " " + v));
+      });
+      out.push("");
+    });
+    return out.join("\n");
+  }
+  document.getElementById("map-copy").addEventListener("click", function(){ copyText(mapText(), "Mapa copiado"); });
+  document.getElementById("map-print").addEventListener("click", function(){
+    document.body.classList.add("printmap");
+    window.print();
+    setTimeout(function(){ document.body.classList.remove("printmap"); }, 500);
+  });
+  document.getElementById("map-reset").addEventListener("click", function(){
+    if (!document.getElementById("map-reset").classList.contains("armed")) {
+      document.getElementById("map-reset").classList.add("armed");
+      document.getElementById("map-reset").textContent = "Confirmar: borrar las tres";
+      setTimeout(function(){
+        var b = document.getElementById("map-reset");
+        b.classList.remove("armed"); b.textContent = "Borrar todo";
+      }, 3500);
+      return;
+    }
+    mapData = [mapEmpty(), mapEmpty(), mapEmpty()];
+    mapSave(); mapBuild();
+    document.getElementById("map-reset").classList.remove("armed");
+    document.getElementById("map-reset").textContent = "Borrar todo";
+  });
+
+  /* ---------- lista de verificacion ---------- */
+  var chk = document.getElementById("chklist");
+  var chkVerdict = document.getElementById("chkverdict");
+  var chkBar = document.getElementById("chkbar");
+  var CHK_KEY = "agentes-sincosoft:servir";
+  function chkUpdate(save){
+    var all = chk.querySelectorAll("input");
+    var n = chk.querySelectorAll("input:checked").length;
+    chkBar.style.width = Math.round(100 * n / all.length) + "%";
+    if (n === all.length) chkVerdict.textContent = "Lista completa. El agente puede entrar a piloto.";
+    else chkVerdict.textContent = n + " de " + all.length + " puntos verificados. Faltan " + (all.length - n) + ".";
+    if (save) {
+      var ids = [];
+      Array.prototype.forEach.call(all, function(x){ if (x.checked) ids.push(x.id); });
+      store.set(CHK_KEY, ids.join(","));
+    }
+  }
+  (function(){
+    var s = store.get(CHK_KEY);
+    if (s) s.split(",").forEach(function(id){ var x = document.getElementById(id); if (x) x.checked = true; });
+    chkUpdate(false);
+  })();
+  chk.addEventListener("change", function(){ chkUpdate(true); });
+  document.getElementById("chk-reset").addEventListener("click", function(){
+    Array.prototype.forEach.call(chk.querySelectorAll("input"), function(x){ x.checked = false; });
+    chkUpdate(true);
+  });
+
+  /* ---------- arranque ---------- */
+  var h = (location.hash || "").replace("#", "");
+  show(panels[h] ? h : "concepto", { keepHash: !panels[h], noScroll: true });
+  window.addEventListener("hashchange", function(){
+    var k = (location.hash || "").replace("#", "");
+    if (panels[k]) show(k, { keepHash: true });
+  });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(updateHint);
+  updateHint();
+})();
+</script>
+
+</body>
+</html>
